@@ -18,7 +18,8 @@ public class Payment {
     private Long id;
 
     private String transactionId;
+    private String userId;
     private Double amount;
-    private String status;  // "PENDING", "SUCCESS", "FAILED"
+    private String status; // PENDING, SUCCESS, FAILED, REFUNDED
     private LocalDateTime timestamp;
 }
