@@ -5,8 +5,6 @@ import com.devnine.paygateway.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +17,7 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    // 1. 결제 생성
     @PostMapping
     public ResponseEntity<Payment> createPayment(
             @RequestParam String userId,
@@ -27,21 +26,26 @@ public class PaymentController {
         return ResponseEntity.ok(payment);
     }
 
+    // 2. 거래 ID로 결제 상태 조회
     @GetMapping("/{transactionId}")
     public ResponseEntity<Payment> getPaymentStatus(@PathVariable String transactionId) {
         Optional<Payment> payment = paymentService.getPaymentByTransactionId(transactionId);
-        return payment.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return payment.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<List<Payment>> getPaymentHistory(
-            @RequestParam String userId,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate) {
-        List<Payment> paymentHistory = (startDate != null && endDate != null)
-                ? paymentService.getPaymentHistory(userId, startDate, endDate)
-                : paymentService.getPaymentHistory(userId);
-        return ResponseEntity.ok(paymentHistory);
+    // 3. 결제 상태 업데이트 (PENDING -> SUCCESS 등)
+    @PatchMapping("/{transactionId}/status")
+    public ResponseEntity<Payment> updatePaymentStatus(
+            @PathVariable String transactionId,
+            @RequestParam String newStatus) {
+        Payment updatedPayment = paymentService.updatePaymentStatus(transactionId, newStatus);
+        return ResponseEntity.ok(updatedPayment);
+    }
+
+    // 4. 환불 요청
+    @PostMapping("/{transactionId}/refund")
+    public ResponseEntity<Payment> requestRefund(@PathVariable String transactionId) {
+        Payment refundedPayment = paymentService.processRefund(transactionId);
+        return ResponseEntity.ok(refundedPayment);
     }
 }
