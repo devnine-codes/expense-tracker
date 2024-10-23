@@ -1,6 +1,6 @@
-# pay-gateway 💰
+# expense-tracker 💰
 
-**Pay Gateway**는 **Spring Boot**를 사용하여 구현한 소비 내역 분석 애플리케이션입니다.  
+**Expense Tracker**는 **Spring Boot**를 사용하여 구현한 소비 내역 분석 애플리케이션입니다.  
 사용자는 **CSV 파일을 업로드**해 자신의 소비 데이터를 기록하고, **카테고리별/월별 지출 분석**을 수행할 수 있습니다.
 
 ---
